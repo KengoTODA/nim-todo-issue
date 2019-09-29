@@ -10,7 +10,7 @@ jobs:
       with:
         args: nimble build -d:ssl
     - name: Upload artifacts
-      uses: skx/github-action-publish-binaries@master
+      uses: skx/github-action-publish-binaries@release-0.7
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
