@@ -2,16 +2,21 @@ name: Release
 on: [release]
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [windows-2016, ubuntu-18.04, macOS-10.14]
     steps:
     - uses: actions/checkout@v1
     - name: Build artifact
       uses: docker://nimlang/nim:1.0.0
       with:
         args: nimble build -d:ssl
+    - name: Rename artifact
+      runs: mv nim_todo_issue nim_todo_issue-${{ matrix.os }}
     - name: Upload artifacts
       uses: skx/github-action-publish-binaries@release-0.7
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        args: 'nim_todo_issue'
+        args: 'nim_todo_issue-*'
