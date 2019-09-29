@@ -9,6 +9,7 @@ jobs:
       - uses: actions/checkout@v1
       - name: Build artifact
         run: |
+          brew update
           brew install nim@1.0.0
           nimble build -d:ssl
           tar -zcvf macOS.tar.gz nim_todo_issue
