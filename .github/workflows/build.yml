@@ -4,17 +4,17 @@ on: [push]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v1
-    - name: Install nium
+    - name: Install nim
       run: |
-        curl https://nim-lang.org/choosenim/init.sh -sSf | sh
+        curl https://nim-lang.org/choosenim/init.sh -sSf > init.sh
+        . init.sh -y
         export PATH=~/.nimble/bin:$PATH
-        choosenim 1.0.0
         nim -v
         nimble -v
+      env:
+        CHOOSENIM_CHOOSE_VERSION: '1.0.0'
     - name: Run test
       run: nimble test --verbose
