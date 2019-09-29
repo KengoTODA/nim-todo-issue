@@ -1,0 +1,17 @@
+name: Release
+on: [release]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Run test
+      uses: docker://nimlang/nim:1.0.0-alpine
+      with:
+        args: nimble build -d:ssl
+    - name: Upload artifacts
+      uses: skx/github-action-publish-binaries@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        args: 'nim_todo_issue'
