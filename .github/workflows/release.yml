@@ -1,5 +1,7 @@
 name: Release
-on: [release]
+on:
+  release:
+    types: created
 jobs:
   macOS:
     runs-on: macOS-10.14
