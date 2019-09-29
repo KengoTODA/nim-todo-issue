@@ -1,22 +1,35 @@
 name: Release
 on: [release]
 jobs:
-  build:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [windows-2016, ubuntu-18.04, macOS-10.14]
+  macOS:
+    runs-on: macOS-10.14
+    steps:
+      - uses: actions/checkout@v1
+      - name: Build artifact
+        run: |
+          brew install nim
+          nimble build -d:ssl
+          tar -zcvf macOS.tar.gz nim_todo_issue
+      - name: Upload artifact
+        uses: skx/github-action-publish-binaries@release-0.7
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          args: 'macOS.tar.gz'
+  ubuntu:
+    runs-on: ubuntu-18.04
     steps:
     - uses: actions/checkout@v1
     - name: Build artifact
-      uses: docker://nimlang/nim:1.0.0
-      with:
-        args: nimble build -d:ssl
-    - name: Rename artifact
-      run: mv nim_todo_issue nim_todo_issue-${{ matrix.os }}
+      run: |
+        curl https://nim-lang.org/choosenim/init.sh -sSf > .choosenim.sh
+        . .choosenim.sh -y
+        export PATH=~/.nimble/bin:$PATH
+        nimble build -d:ssl
+        tar -zcvf ubuntu.tar.gz nim_todo_issue
     - name: Upload artifacts
       uses: skx/github-action-publish-binaries@release-0.7
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        args: 'nim_todo_issue-*'
+        args: 'ubuntu.tar.gz'
